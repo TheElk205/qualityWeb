@@ -56,12 +56,14 @@ class QualityApi
         }
     }
 
-    public function createQuality($originalUrl, $mpdUrl) {
+    public function createQuality($originalUrl, $mpdUrl, $numberOfThreads, $numberOfFrames) {
         $fields = array(
             'source' => $originalUrl,
             'mpd' => $mpdUrl,
+            'numberOfThreads' => $numberOfThreads,
+            'numberOfFrames' => $numberOfFrames,
         );
-        $url = $this->basePath . "/dash";
+        $url = $this->basePath . "/dashThreadTest";
         return postCall($url,$fields);
     }
 }

@@ -37,6 +37,12 @@
         <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/button.css">
         <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/input.css">
 
+        <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/accordion.css">
+        <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/accordion.js">
+
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
         <style type="text/css">
             body {
             background-color: #FFFFFF;
@@ -56,45 +62,15 @@
             }
         </style>
 
-
-        <!-- Is called when new Quality is created -->
+        <!-- accordion -->
         <script>
-            $(document)
-                .ready(function() {
-                    $('.ui.form')
-                        .form({
-                            fields: {
-                                email: {
-                                    identifier  : 'email',
-                                    rules: [
-                                        {
-                                            type   : 'empty',
-                                            prompt : 'Please enter your e-mail'
-                                        },
-                                        {
-                                            type   : 'email',
-                                            prompt : 'Please enter a valid e-mail'
-                                        }
-                                    ]
-                                },
-                                password: {
-                                    identifier  : 'password',
-                                    rules: [
-                                        {
-                                            type   : 'empty',
-                                            prompt : 'Please enter your password'
-                                        },
-                                        {
-                                            type   : 'length[6]',
-                                            prompt : 'Your password must be at least 6 characters'
-                                        }
-                                    ]
-                                }
-                            }
-                        })
-                    ;
-                })
-            ;
+            $(function() {
+                $('.ui.accordion')
+                    .accordion({
+                        collapsible: true,
+                        active: false
+                    })
+                ;});
         </script>
 
         <meta charset="UTF-8">
@@ -115,6 +91,26 @@
                         <input type="text" name="mpdUrl" required="true" placeholder="representations.mpd" <?php if(isset($_GET['mpdUrl'])) { echo "value='" . $_GET['mpdUrl'] . "'";} ?>>
                     </div>
                     <br>
+
+                    <!-- Further Options -->
+                    <div class="ui styled fluid accordion" style="margin-bottom: 16px;margin-top: 16px;" aria-expanded="false"; aria-selected="false">
+                        <div class="title" aria-expanded="false"; aria-selected="false">
+                            <i class="dropdown icon"></i>
+                            Further Options
+                        </div>
+                        <div class="content" style="display: inline">
+                            <div>
+                                <div class="ui labeled input" style="padding-bottom: 2px;width: 100%">
+                                    <a class="ui label" style="width: 135px">#Threads</a>
+                                    <input type="number" name="numberOfThreads" required="true" value="1">
+                                </div>
+                                <div class="ui labeled input" style="padding-bottom: 2px;width: 100%">
+                                    <a class="ui label" style="width: 135px" >#Frames</a>
+                                    <input type="number" name="numberOfFrames" required="true" value="-1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button class="ui button" style="width: 100%">Create Quality</button>
                 </div>
             </form>

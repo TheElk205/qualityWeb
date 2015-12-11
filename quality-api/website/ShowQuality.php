@@ -37,6 +37,7 @@ function stringStartsWith($haystack, $needle) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/table.css">
         <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/accordion.css">
+        <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/accordion.js">
 
         <script src="//code.jquery.com/jquery-1.10.2.js"></script>
         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -44,8 +45,6 @@ function stringStartsWith($haystack, $needle) {
 
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../charts/simpleGoogleBarChart.js"></script>
-
-        <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/accordion.js">
 
         <style type="text/css">
             body {
@@ -67,12 +66,13 @@ function stringStartsWith($haystack, $needle) {
             }
         </style>
 
-        <!-- Player Akkordion -->
+        <!-- accordion -->
         <script>
             $(function() {
             $('.ui.accordion')
                 .accordion({
-                    collapsible: true
+                    collapsible: true,
+                    active: false
                 })
             ;});
         </script>
@@ -117,6 +117,7 @@ function stringStartsWith($haystack, $needle) {
             <?php if(isset($_GET['id'])) {
                 $quality = $qualityApi->getQualityWithId($_GET['id']);
                 ?>
+                <h1 class="ui header">Show Quality</h1>
                 <!-- Basic Information -->
                 <table class="ui definition celled right aligned table">
                     <tbody>
@@ -134,18 +135,38 @@ function stringStartsWith($haystack, $needle) {
                     </tr>
                     <tr>
                         <td class="left aligned">Status</td>
-                        <td><?php echo $quality->status ?></td>
+                        <?php
+                        if($quality->status == "FINISHED") {
+                            echo "<td class='positive'>".$quality->status . "</td>";
+                        }
+                        else if($quality->status == "ERROR") {
+                            echo "<td class='negative'>".$quality->status . "</td>";
+                        }
+                        else {
+                            echo "<td class='warning'>" . $quality->status . "</td>";
+                        }
+                        ?>
+
+                    </tr>
+                    <tr>
+                        <td class="left aligned">#Threads</td>
+                        <td><?php echo $quality->numberOfThreads ?></td>
                     </tr>
                     <tr>
                         <td class="left aligned">TimeNeeded</td>
                         <td><?php echo QualityApi::getFormattedtiemString($quality->timeNeeded) ?></td>
                     </tr>
                     <tr>
-                        <td class="left aligned">#Threads</td>
-                        <td><?php echo $quality->numberOfThreads ?></td>
+                        <td class="left aligned">#Frames</td>
+                        <td><?php echo $quality->numberOfFrames ?></td>
+                    </tr>
+                    <tr>
+                        <td class="left aligned">Time / Frame</td>
+                        <td><?php echo QualityApi::getFormattedtiemString($quality->timeNeeded/ $quality->numberOfFrames) ?></td>
                     </tr>
                     </tbody>
                 </table>
+                <?php if($quality->status == "FINISHED") { ?>
                 <!-- Represnetation Qualites -->
                 <table class="ui right aligned celled table">
                     <thead>
@@ -187,10 +208,10 @@ function stringStartsWith($haystack, $needle) {
                     </tbody>
                 </table>
                 <!-- Graphs Midvalues -->
-                <div class="ui styled fluid accordion" >
+                <div class="ui styled fluid accordion" style="margin-bottom: 16px;margin-top: 16px">
                     <div class="title">
                         <i class="dropdown icon"></i>
-                        Quality Middle Values:
+                        Quality Middle Values
                     </div>
                     <div class="content" style="display: inline">
                         <div id='chart_psnr_div'></div>
@@ -198,7 +219,7 @@ function stringStartsWith($haystack, $needle) {
                     </div>
                 </div>
                 <!-- Bitdash Player -->
-                <div class="ui styled fluid accordion">
+                <div class="ui styled fluid accordion"  style="margin-bottom: 16px;margin-top: 16px">
                     <div class="title">
                         <i class="dropdown icon"></i>
                         Video
@@ -224,7 +245,7 @@ function stringStartsWith($haystack, $needle) {
                         // Error!
                     });
                 </script>
-            <?php } else {echo "Id not set";}?>
+            <?php } } else {echo "Id not set";}?>
         </div>
     </body>
 </html>

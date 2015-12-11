@@ -35,27 +35,17 @@
         </a>
         <a href="#" class="item">Home</a>
         <div class="ui simple dropdown item">
-            Add Quality <i class="dropdown icon"></i>
+            Add<i class="dropdown icon"></i>
             <div class="menu">
-                <a class="item" href="AddSimpleQuality.php">Simple Quality</a>
-                <a class="item" href="#">Link Item</a>
-                <div class="divider"></div>
-                <div class="header">Header Item</div>
-                <div class="item">
-                    <i class="dropdown icon"></i>
-                    Sub Menu
-                    <div class="menu">
-                        <a class="item" href="#">Link Item</a>
-                        <a class="item" href="#">Link Item</a>
-                    </div>
-                </div>
-                <a class="item" href="#">Link Item</a>
+                <a class="item" href="AddQuality.php">Add Quality</a>
+                <a class="item" href="AddQualityTest.php">Add Quality Test</a>
             </div>
         </div>
         <div class="ui simple dropdown item">
-            Show Quality <i class="dropdown icon"></i>
+            Show<i class="dropdown icon"></i>
             <div class="menu">
-                <a class="item" href="ShowQuality.php">Simple Quality</a>
+                <a class="item" href="ShowQuality.php">Show Quality</a>
+                <a class="item" href="#">Show Quality Test</a>
             </div>
         </div>
     </div>
