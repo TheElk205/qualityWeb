@@ -55,4 +55,13 @@ class QualityApi
             return intval($ms/60000) . ":" . ($ms%60000)/1000;
         }
     }
+
+    public function createQuality($originalUrl, $mpdUrl) {
+        $fields = array(
+            'source' => $originalUrl,
+            'mpd' => $mpdUrl,
+        );
+        $url = $this->basePath . "/dash";
+        return postCall($url,$fields);
+    }
 }
