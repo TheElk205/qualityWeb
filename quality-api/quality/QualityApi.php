@@ -8,11 +8,10 @@
 
 namespace quality;
 
-include_once "apiRequests.php";
-include_once "QualityInfo.php";
-include_once "QualityInfoList.php";
+// die gehen nciht über Autoload weg
+require_once 'apiRequests.php';
 
-use quality\QualityInfo as QualityInfo;
+require_once '../autoload.php';
 
 class QualityApi
 {

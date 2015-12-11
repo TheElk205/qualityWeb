@@ -5,7 +5,8 @@
  * Date: 07.12.2015
  * Time: 10:58
  */
-include "../QualityApi.php";
+
+require_once '../autoload.php';
 
 use quality\QualityApi as QualityApi;
 

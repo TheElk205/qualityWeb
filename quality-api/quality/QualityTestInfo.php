@@ -7,12 +7,7 @@
  */
 
 namespace quality;
-
-include_once "ApiResource.php";
-include_once "RepresentationInfo.php";
-
-use quality\ApiResource as ApiResource;
-use quality\RepresentationInfo as RepresentationInfo;
+require_once '../autoload.php';
 
 class QualityTestInfo extends ApiResource
 {

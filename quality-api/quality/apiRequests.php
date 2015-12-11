@@ -6,6 +6,8 @@
  * Time: 21:39
  */
 
+namespace quality;
+
 function getD3Random($numberPoints, $numberSets) {
     $url = "localhost:8080/quality/test/d3";
     $fields = array(
