@@ -81,7 +81,7 @@
 <body>
 <?php include 'menu.php'?>
 <div class="ui main text container">
-    <form class="ui large form" name="createQuality" action="AddQualityController.php">
+    <form class="ui large form" name="createQuality" action="AddQualityTestController.php">
         <div class="ui stacked segment">
             <div class="ui labeled input" style="padding-bottom: 2px;width: 100%">
                 <a class="ui label" style="width: 135px">Original Video</a>
@@ -94,19 +94,19 @@
             </div>
             <div class="ui labeled input" style="padding-bottom: 2px;width: 100%">
                 <a class="ui label" style="width: 135px">#Threads Min</a>
-                <input type="text" name="originalUrl" required="true" value="<?php if(isset($_GET['threadCountMin'])) { echo $_GET['threadCountMin'];} else {echo 1;} ?>" >
+                <input type="text" name="threadCountMin" required="true" value="<?php if(isset($_GET['threadCountMin'])) { echo $_GET['threadCountMin'];} else {echo 1;} ?>" >
             </div>
             <div class="ui labeled input" style="padding-bottom: 2px;width: 100%">
                 <a class="ui label" style="width: 135px">#Threads Max</a>
-                <input type="text" name="originalUrl" required="true" value="<?php if(isset($_GET['threadCountMax'])) { echo $_GET['threadCountMax'];} else {echo 1;}?>" >
+                <input type="text" name="threadCountMax" required="true" value="<?php if(isset($_GET['threadCountMax'])) { echo $_GET['threadCountMax'];} else {echo 1;}?>" >
             </div>
             <div class="ui labeled input" style="padding-bottom: 2px;width: 100%">
                 <a class="ui label" style="width: 135px">Step Size</a>
-                <input type="text" name="originalUrl" required="true"  value="<?php if(isset($_GET['threadStepSize'])) { echo $_GET['threadStepSize'];} else {echo 1;}?>" >
+                <input type="text" name="threadStepSize" required="true"  value="<?php if(isset($_GET['threadStepSize'])) { echo $_GET['threadStepSize'];} else {echo 1;}?>" >
             </div>
             <div class="ui labeled input" style="padding-bottom: 2px;width: 100%">
                 <a class="ui label" style="width: 135px">#Repetitions</a>
-                <input type="text" name="originalUrl" required="true" value="<?php if(isset($_GET['threadRepetitons'])) { echo $_GET['threadRepetitons'];} else {echo 1;}?>" >
+                <input type="text" name="threadRepetitons" required="true" value="<?php if(isset($_GET['threadRepetitons'])) { echo $_GET['threadRepetitons'];} else {echo 1;}?>" >
             </div>
             <button class="ui button" style="width: 100%">Create Quality Test</button>
             <!-- Information -->

@@ -46,6 +46,11 @@ class QualityInfo extends ApiResource
      */
     public $mpdUrl;
 
+    /**
+     * @var PSNR values of each fraem: QualityPSNRFrame
+     */
+    public $psnrFrames;
+
     public function __construct(\stdClass $class)
     {
         parent::__construct($class);

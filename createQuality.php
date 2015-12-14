@@ -22,7 +22,7 @@ if(isset($_SESSION['post_data'])) {
 if( !isset($_POST['apiKey'] )) {
 	echo "Create new Quality:<br />";
 	echo "<form action='createQuality.php' method='post'>
-	 <p>Bitmovin Api Key <input type='text' value='819842816a011030641649e291e59d55865ade3d1ca951e101b0154c76e3a0a2' name='apiKey' /></p>
+	 <p>Bitmovin Api Key <input type='text' value='' name='apiKey' /></p>
 	 <p><input type='submit' /></p>
 	</form>";
 }

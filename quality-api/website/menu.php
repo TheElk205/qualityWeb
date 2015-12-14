@@ -39,13 +39,14 @@
             <div class="menu">
                 <a class="item" href="AddQuality.php">Add Quality</a>
                 <a class="item" href="AddQualityTest.php">Add Quality Test</a>
+                <a class="item" href="AddQualityFromBitcodin.php">From bitcodin</a>
             </div>
         </div>
         <div class="ui simple dropdown item">
             Show<i class="dropdown icon"></i>
             <div class="menu">
                 <a class="item" href="ShowQuality.php">Show Quality</a>
-                <a class="item" href="#">Show Quality Test</a>
+                <a class="item" href="ShowQualityTest.php">Show Quality Test</a>
             </div>
         </div>
     </div>

@@ -11,6 +11,10 @@ use \quality\QualityApi as QualityApi;
 
 $qualityApi = new QualityApi();
 
+$data = array();
+$count = array();
+$midValues = array();
+
 function shortenURL($url) {
     $offset = 0;
     if(stringStartsWith($url,"https")) {
@@ -78,7 +82,7 @@ function stringStartsWith($haystack, $needle) {
             $('.ui.accordion')
                 .accordion({
                     collapsible: true,
-                    active: false
+                    active: true
                 })
             ;});
         </script>
@@ -99,87 +103,50 @@ function stringStartsWith($haystack, $needle) {
 
             function drawAnnotations() {
                 <?php
-                if (isset($_GET['id'])) {
-                    $answer = $qualityApi->getQualityWithId($_GET["id"]);
-                    if ($answer->status == "FINISHED") {
-                        $psnrDataContent = "[['', 'PSNR Values'],";
-                        $ssimDataContent = "[['', 'SSIM Values'],";
-
-                        if ($answer->results != null) {
-                            foreach ($answer->results as $res) {
-                                $psnrDataContent = $psnrDataContent . "['" . $res->bitrate . "'," . $res->psnr . "],";
-                                $ssimDataContent = $ssimDataContent . "['" . $res->bitrate . "'," . $res->ssim . "],";
+                    if (isset($_GET['id'])) {
+                        $answer = $qualityApi->getQualityTestWithId($_GET['id']);
+                        //reading Data from JSonanswer
+                        foreach($answer->results as $res) {
+                            if (array_key_exists($res->numberOfThreads, $data)) {
+                                $data[$res->numberOfThreads] = $data[$res->numberOfThreads] + $res->timeNeeded;
+                                $count[$res->numberOfThreads] = $count[$res->numberOfThreads]  + 1;
                             }
-
+                            else {
+                                $data[$res->numberOfThreads] = $res->timeNeeded;
+                                $count[$res->numberOfThreads] = 1;
+                            }
                         }
-                        $psnrDataContent = substr($psnrDataContent, 0, -1);
-                        $psnrDataContent = $psnrDataContent . "]";
-                        $ssimDataContent = substr($ssimDataContent, 0, -1);
-                        $ssimDataContent = $ssimDataContent . "]";
 
-                        echo "var dataPSNR = " . $psnrDataContent . ";";
-                        echo "dataSSIM = " . $ssimDataContent . ";";
-                        echo "drawSimpleBarchart(dataPSNR, 'PSNR Values of all Representations', 'Bitrate', 'PSNR in dB', 'chart_psnr_div');
-                                drawSimpleBarchart(dataSSIM, 'SSIM Values of all Representations', 'Bitrate', 'PSNR in dB', 'chart_ssim_div');";
+                        //Calculating Midvalues
+                        foreach($data as $nThreads => $value) {
+                            $midValues[$nThreads] = $value / $count[$nThreads] /1000;
+                        }
+
+                        $dataString = "[['', 'Time in ms'],";
+                        foreach($midValues as $nThreads => $value) {
+                            $dataString .= "['" . $nThreads . "'," . $value . "],";
+                        }
+                        $dataString = substr($dataString,0,-1);
+                        $dataString .= "]";
+
+                        echo "var data = " . $dataString . ";";
+                        echo "drawSimpleBarchart(data, 'Middle Values per Threadcount of timeNeeded', '#Threads', 'timeNeeded in s', 'chart_div');";
                     }
-                }?>
+                ?>
             }
         </script>
-
-        <!-- Graphs Over time -->
-        <!-- <script>
-            google.load('visualization', '1', {packages: ['corechart', 'line']});
-            google.setOnLoadCallback(drawCurveTypes);
-
-            function drawCurveTypes() {
-                <?php if (isset($_GET['id'])) {
-                $quality = $qualityApi->getQualityWithId($_GET["id"]);
-                echo "var data = new google.visualization.DataTable();";
-                echo "data.addColumn('number', 'Frame');";
-                foreach ($quality->results as $res) {
-                    echo "data.addColumn('number', '" . $res->bitrate / 1000 . " kbps');";
-                }
-                echo "data.addRows(";
-                $data = "[";
-                for ($i = 0; $i < $quality->numberOfFrames; $i++) {
-                    $data .= "[" . $i . ",";
-                    //var_dump($quality->psnrFrames->results);
-                    foreach ($quality->psnrFrames->results as $res) {
-                        $data .= $res->results[$i] . ",";
-                    }
-                    $data = substr($data, 0, -1) . "],";
-                }
-                $data = substr($data, 0, -1) . "]";
-                echo $data . ");";
-                echo "var options = {
-                            hAxis: {
-                            title: 'Time'
-                            },
-                            vAxis: {
-                                title: 'Popularity'
-                            },
-                            series: {
-                                1: {curveType: 'function'}
-                            }
-                        };
-
-                    var chart = new google.visualization.LineChart(document.getElementById('chart_psnr_time_div'));
-                    chart.draw(data, options);";
-                }?>
-            }
-        </script> -->
     </head>
     <body>
         <?php include 'menu.php'?>
         <div class="ui main text container">
             <!-- Selector -->
-            <form action="ShowQuality.php" method="get" >
+            <form action="ShowQualityTest.php" method="get">
                 <div class="ui selection dropdown" style="width: 60%">
-                    <input type="hidden" name="id" >
+                    <input type="hidden" name="id">
                     <i class="dropdown icon"></i>
                     <div class="default text">ID</div>
                     <div class="menu">
-                        <?php foreach($qualityApi->getQualityIds()->getAllIds() as $id) {
+                        <?php foreach($qualityApi->getQualityTestIds()->getAllIds() as $id) {
                             echo "<div class='item' data-value='" . $id . "'>" . $id . "</div>";
                         }?>
                     </div>
@@ -189,9 +156,9 @@ function stringStartsWith($haystack, $needle) {
                 </button>
             </form>
             <?php if(isset($_GET['id'])) {
-                $qualityTest = $qualityApi->getQualityWithId($_GET['id']);
+                $qualityTest = $qualityApi->getQualityTestWithId($_GET['id']);
                 ?>
-                <h1 class="ui header">Show Quality</h1>
+                <h1 class="ui header">Show Quality Test</h1>
                 <!-- Basic Information -->
                 <table class="ui definition celled right aligned table">
                     <tbody>
@@ -223,55 +190,90 @@ function stringStartsWith($haystack, $needle) {
 
                     </tr>
                     <tr>
-                        <td class="left aligned">#Threads</td>
-                        <td><?php echo $qualityTest->numberOfThreads ?></td>
-                    </tr>
-                    <tr>
                         <td class="left aligned">TimeNeeded</td>
                         <td><?php echo QualityApi::getFormattedtiemString($qualityTest->timeNeeded) ?></td>
-                    </tr>
-                    <tr>
-                        <td class="left aligned">#Frames</td>
-                        <td><?php echo $qualityTest->numberOfFrames ?></td>
-                    </tr>
-                    <tr>
-                        <td class="left aligned">Time / Frame</td>
-                        <td><?php echo QualityApi::getFormattedtiemString($qualityTest->timeNeeded/ $qualityTest->numberOfFrames) ?></td>
                     </tr>
                     </tbody>
                 </table>
                 <?php if($qualityTest->status == "FINISHED") { ?>
-
-                <!-- Represnetation Qualites -->
+                <!-- Thread Information -->
                 <table class="ui right aligned celled table">
                     <thead>
                         <tr>
                             <th class="left aligned">Attributes</th>
-                            <th colspan="<?php echo count($qualityTest->results) ?>" style="text-align: center">Representations</th>
+                            <?php
+                            $number= 1;
+                            foreach($qualityTest->results as $result) {
+                                echo "<th>Test " . $number . "</th>";
+                                $number += 1;
+                            }
+                            ?>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td>#Threads</td>
+                            <?php
+                            foreach($qualityTest->results as $result) {
+                                echo "<td>" . $result->numberOfThreads .  "</td>";
+                            }
+                            ?>
+                        </tr>
+                        <tr>
+                            <td>#Frames</td>
+                            <?php
+                            foreach($qualityTest->results as $result) {
+                                echo "<td>" . $result->numberOfFrames .  "</td>";
+                            }
+                            ?>
+                        </tr>
+                        <tr>
+                            <td>Time Needed</td>
+                            <?php
+                            foreach($qualityTest->results as $result) {
+                                echo "<td>" . QualityApi::getFormattedtiemString($result->timeNeeded) .  "</td>";
+                            }
+                            ?>
+                        </tr>
+                        <tr>
+                            <td>Time/Frames</td>
+                            <?php
+                            foreach($qualityTest->results as $result) {
+                                echo "<td>" . QualityApi::getFormattedtiemString($result->timeNeeded/$result->numberOfFrames) .  "</td>";
+                            }
+                            ?>
+                        </tr>
+                    </tbody>
+                    <!-- Represnetation Qualites of element 0 -->
+                    <table class="ui right aligned celled table">
+                        <thead>
+                        <tr>
+                            <th class="left aligned">Attributes</th>
+                            <th colspan="<?php echo count($qualityTest->results) ?>" style="text-align: center">Representations</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
                             <td class="left aligned">Bitrate</td>
-                            <?php foreach($qualityTest->results as $res) {
+                            <?php foreach($qualityTest->results[0]->resultsRepresentations as $res) {
                                 echo "<td>" . $res->bitrate/1000 . " kbps</td>";
                             }?>
                         </tr>
                         <tr>
                             <td class="left aligned">Time Needed</td>
-                            <?php foreach($qualityTest->results as $res) {
+                            <?php foreach($qualityTest->results[0]->resultsRepresentations as $res) {
                                 echo "<td>" . QualityApi::getFormattedtiemString($res->timeNeeded) . "</td>";
                             }?>
                         </tr>
                         <tr>
                             <td class="left aligned">PSNR</td>
-                            <?php foreach($qualityTest->results as $res) {
+                            <?php foreach($qualityTest->results[0]->resultsRepresentations as $res) {
                                 echo "<td>" . $res->psnr . " dB</td>";
                             }?>
                         </tr>
                         <tr>
                             <td class="left aligned">SSIM</td>
-                            <?php foreach($qualityTest->results as $res) {
+                            <?php foreach($qualityTest->results[0]->resultsRepresentations as $res) {
                                 if($res->ssim == "NaN") {
                                     echo "<td class='negative'>" . $res->ssim . "</td>";
                                 }
@@ -280,31 +282,20 @@ function stringStartsWith($haystack, $needle) {
                                 }
                             }?>
                         </tr>
-                    </tbody>
+                        </tbody>
+                    </table>
                 </table>
 
-                <!-- Representation quality values -->
+                <!-- Graphs Midvalues -->
                 <div class="ui styled fluid accordion" style="margin-bottom: 16px;margin-top: 16px">
                     <div class="title">
                         <i class="dropdown icon"></i>
-                        Qualities of each representation
+                        Quality Middle Values
                     </div>
-                    <div class="content" style="display: inline">
-                        <div id='chart_psnr_div'></div>
-                        <div id='chart_ssim_div'></div>
+                    <div class="content" style="display: inline; width: 100%">
+                        <div id='chart_div'></div>
                     </div>
                 </div>
-
-                <!-- Representation quality values over time-->
-                <!-- <div class="ui styled fluid accordion" style="margin-bottom: 16px;margin-top: 16px">
-                    <div class="title">
-                        <i class="dropdown icon"></i>
-                        Qualities of each representation
-                    </div>
-                    <div class="content" style="display: inline">
-                        <div id='chart_psnr_time_div'></div>
-                    </div>
-                </div> -->
 
                 <!-- Bitdash Player -->
                 <div class="ui styled fluid accordion"  style="margin-bottom: 16px;margin-top: 16px">

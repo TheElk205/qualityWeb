@@ -23,7 +23,12 @@ class QualityApi
      */
     public function getQualityWithId($id) {
         $json = getCall($this->basePath . "/" . $id );
-        return QualityInfo::create($json);
+        $quality = QualityInfo::create($json);
+
+        $json = getcall($this->basePath . "/" . $id . "/psnr");
+        $psnr = QualityPSNR::create($json);
+        $quality->psnrFrames = $psnr;
+        return $quality;
     }
 
     /**
@@ -40,19 +45,25 @@ class QualityApi
         return QualityInfoList::create($json);
     }
 
+    public function getQualityTestIds() {
+        $json = getCall($this->basePath . "/test/list");
+        return QualityTestInfoList::create($json);
+    }
+
     public function getPlayerkey() {
         return "5bef380f-7e0d-4dc9-b027-52792d8385ec";
     }
 
     public static function getFormattedtiemString($ms) {
+        $msPrecision = 3;
         if($ms < 1000) {
-            return $ms . " ms";
+            return round($ms,$msPrecision) . " ms";
         }
         else if($ms >= 1000 && $ms < 60000) {
-            return $ms/1000 . " s";
+            return round($ms/1000,$msPrecision) . " s";
         }
         else if($ms >= 60000 && $ms < 3600000) {
-            return intval($ms/60000) . ":" . ($ms%60000)/1000;
+            return intval($ms/60000) . ":" . round(($ms%60000)/1000,$msPrecision);
         }
     }
 
@@ -64,6 +75,19 @@ class QualityApi
             'numberOfFrames' => $numberOfFrames,
         );
         $url = $this->basePath . "/dashThreadTest";
+        return postCall($url,$fields);
+    }
+
+    public function createQualityTest($originalUrl, $mpdUrl, $threadCountMin, $threadCountMax, $threadStepSize, $threadRepetitons) {
+        $fields = array(
+            'source' => $originalUrl,
+            'mpd' => $mpdUrl,
+            'threadCountMin' => $threadCountMin,
+            'threadCountMax' => $threadCountMax,
+            'threadStepSize' => $threadStepSize,
+            'threadRepetitons' => $threadRepetitons
+        );
+        $url = $this->basePath . "/dash/test";
         return postCall($url,$fields);
     }
 }

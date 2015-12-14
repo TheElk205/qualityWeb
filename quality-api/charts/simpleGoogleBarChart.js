@@ -16,7 +16,7 @@ function drawSimpleBarchart(data, title, xLabel, yLabel, htmlElementName)
     var options = {
         title: title,
         legend: 'none',
-        chartArea: {width: '50%'},
+        chartArea: {width: '90%'},
         annotations: {
             alwaysOutside: true,
             textStyle: {
