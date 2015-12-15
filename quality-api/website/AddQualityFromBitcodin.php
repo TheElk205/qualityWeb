@@ -81,6 +81,35 @@ use bitcodin\Job;
             ;});
     </script>
 
+    <!-- pagination of table -->
+    <script>
+        $(document).ready(function(){
+            $('#data').after('<a class="icon item" id="leftArrow">');
+            var rowsShown = 5;
+            var rowsTotal = $('#data tbody tr').length;
+            var numPages = rowsTotal/rowsShown;
+            //$('#nav').append('<a class="icon item"> <i class="left chevron icon"></i> </a>');
+            for(i = 0;i < numPages;i++) {
+                var pageNum = i + 1;
+                $('#nav').append('<a href="#" class="item" rel="'+i+'">'+pageNum+'</a> ');
+            }
+            //$('#nav').append('<a class="icon item"> <i class="right chevron icon"></i> </a>');
+            $('#data tbody tr').hide();
+            $('#data tbody tr').slice(0, rowsShown).show();
+            $('#nav a:first').addClass('active');
+            $('#nav a').bind('click', function(){
+
+                $('#nav a').removeClass('active');
+                $(this).addClass('active');
+                var currPage = $(this).attr('rel');
+                var startItem = currPage * rowsShown;
+                var endItem = startItem + rowsShown;
+                $('#data tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+                css('display','table-row').animate({opacity:1}, 300);
+            });
+        });
+    </script>
+
     <meta charset="UTF-8">
     <title>Add new Simple Quality</title>
 </head>
@@ -98,9 +127,10 @@ use bitcodin\Job;
             <?php if(isset($_GET['apiKey'])) {
                 Bitcodin::setApiToken($_GET['apiKey']);
 	            $jobs = Job::getList();?>
-                <table id='showJobs' class="ui right aligned celled table">
+                <table id='data' class="ui right aligned celled table">
                     <thead>
                         <tr>
+                            <th>Thumbnail</th>
                             <th>Encoding ID</th>
                             <th>Input ID</th>
                             <th>Calculate Quality</th>
@@ -110,6 +140,7 @@ use bitcodin\Job;
                     <?php foreach($jobs->jobs as $job) {
                             if($job->status == "Finished") {?>
                                 <tr>
+                                    <td><img src="<?php echo $job->input->thumbnailUrl ?>" style="width: 114px;height: 64px;"></td>
                                     <td><?php echo $job->jobId ?></td><td><?php echo $job->input->inputId ?></td>
                                     <td>
                                         <form name='f1' method='get' action="AddQuality.php">
@@ -122,6 +153,13 @@ use bitcodin\Job;
                                 </tr>
                             <?php }} ?>
                     </tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="4">
+                            <div class="ui right floated pagination menu" id="nav">
+                            </div>
+                        </th>
+                    </tr></tfoot>
                 </table>
             <?php } ?>
         </div>

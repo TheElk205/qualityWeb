@@ -31,6 +31,18 @@ class QualityApi
         return $quality;
     }
 
+    public function getQualityWithIdJson($id) {
+        return getCall($this->basePath . "/" . $id );
+    }
+
+    public function getPSNROfIDJson($id) {
+        return getcall($this->basePath . "/" . $id . "/psnr");
+    }
+
+    public function getSSIMOfIDJson($id) {
+        return getcall($this->basePath . "/" . $id . "/ssim");
+    }
+
     /**
      * @param $id   The Quality test ID to analyse
      * @return \QualityInfo the object corresponding to the ID
@@ -40,14 +52,26 @@ class QualityApi
         return QualityTestInfo::create($json);
     }
 
+    public function getQualityTestWithIdJson($id) {
+        return getCall($this->basePath . "/test/" . $id );
+    }
+
     public function getQualityIds() {
         $json = getCall($this->basePath . "/list");
         return QualityInfoList::create($json);
     }
 
+    public function getQualityIdsJson() {
+        return getCall($this->basePath . "/list");
+    }
+
     public function getQualityTestIds() {
         $json = getCall($this->basePath . "/test/list");
         return QualityTestInfoList::create($json);
+    }
+
+    public function getQualityTestIdsJson() {
+        return getCall($this->basePath . "/test/list");
     }
 
     public function getPlayerkey() {

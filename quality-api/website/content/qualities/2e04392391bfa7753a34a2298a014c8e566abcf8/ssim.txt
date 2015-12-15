@@ -1,0 +1,1 @@
+{"id":"2e04392391bfa7753a34a2298a014c8e566abcf8","results":[{"results":[],"identicalFrames":0,"bitrate":800000,"result":"NaN"},{"results":[],"identicalFrames":0,"bitrate":400000,"result":"NaN"}],"status":"FINISHED"}

@@ -11,8 +11,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
 <!-- Site Properities -->
-<title>Fixed Menu Example - Semantic</title>
-
 <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/reset.css">
 <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/site.css">
 
@@ -35,7 +33,8 @@
         </a>
         <a href="#" class="item">Home</a>
         <div class="ui simple dropdown item">
-            Add<i class="dropdown icon"></i>
+            Add
+            <i class="dropdown icon"></i>
             <div class="menu">
                 <a class="item" href="AddQuality.php">Add Quality</a>
                 <a class="item" href="AddQualityTest.php">Add Quality Test</a>
@@ -43,10 +42,21 @@
             </div>
         </div>
         <div class="ui simple dropdown item">
-            Show<i class="dropdown icon"></i>
+            Show
+            <i class="dropdown icon"></i>
             <div class="menu">
                 <a class="item" href="ShowQuality.php">Show Quality</a>
                 <a class="item" href="ShowQualityTest.php">Show Quality Test</a>
+                <a class="item" href="ShowAllQualities.php">Show All Qualities</a>
+                <a class="item" href="CompareQualities.php">Compare Qualities</a>
+            </div>
+        </div>
+        <div class="ui simple dropdown item">
+            Data
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <a class="item" href="SaveData.php">Save</a>
+                <a class="item" href="RestoreData.php">Restore</a>
             </div>
         </div>
     </div>
