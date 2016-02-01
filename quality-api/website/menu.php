@@ -59,5 +59,6 @@
                 <a class="item" href="RestoreData.php">Restore</a>
             </div>
         </div>
+        <a href="GraphTest.php" class="item">Graph Test</a>
     </div>
 </div>

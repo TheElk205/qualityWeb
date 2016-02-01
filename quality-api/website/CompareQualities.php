@@ -141,6 +141,12 @@ function stringStartsWith($haystack, $needle) {
                         }?>
                     </tr>
                     <tr>
+                        <td>#Threads</td>
+                        <?php foreach($qualites as $quality) {
+                            echo "<td colspan='" . count($quality->results) . "'>". $quality->numberOfThreads . "</td>";
+                        }?>
+                    </tr>
+                    <tr>
                         <td>Time</td>
                         <?php foreach($qualites as $quality) {
                             echo "<td colspan='" . count($quality->results) . "'>". QualityApi::getFormattedtiemString($quality->timeNeeded) . "</td>";
