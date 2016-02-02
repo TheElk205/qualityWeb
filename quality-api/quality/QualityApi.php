@@ -138,11 +138,12 @@ class QualityApi
         $quality = $this->getQualityWithId($id);
         $string = "[";
         $max = 10;
-        for($frame = 0; $frame < count($quality->psnrFrames->results[0]->results); $frame++) {
+        //var_dump($quality);
+        for($frame = 0; $frame < count($quality->psnrFrames->representations[0]->values); $frame++) {
             $string .= "\n{frame: " . $frame . ", ";
-            for($bitrate = 0; $bitrate < count($quality->psnrFrames->results); $bitrate++) {
-                $string .= "b" . $bitrate . ": " . $quality->psnrFrames->results[$bitrate]->results[$frame];
-                if($bitrate < count($quality->psnrFrames->results)-1) {
+            for($videoId = 0; $videoId < count($quality->psnrFrames->representations); $videoId++) {
+                $string .= "b" . $videoId . ": " . $quality->psnrFrames->representations[$videoId]->values[$frame];
+                if($videoId < count($quality->psnrFrames->representations)-1) {
                     $string .= ", ";
                 }
                 else {
@@ -150,11 +151,11 @@ class QualityApi
                 }
             }
             $max--;
-            /*if($max == 0) {
-                break;
-            }*/
+            //if($max == 0) {
+            //    break;
+            //}
 
-            if($frame < count($quality->psnrFrames->results[0]->results)-1) {
+            if($frame < count($quality->psnrFrames->representations[0]->values)-1) {
                 $string .= ", ";
             }
         }

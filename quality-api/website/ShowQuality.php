@@ -52,6 +52,11 @@ function stringStartsWith($haystack, $needle) {
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="../charts/simpleGoogleBarChart.js"></script>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.5/dc.js"></script>
+        <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.5/dc.css">
+
         <style type="text/css">
             body {
                 background-color: #FFFFFF;
@@ -124,6 +129,57 @@ function stringStartsWith($haystack, $needle) {
                     }
                 }?>
             }
+        </script>
+
+        <!-- frames over time -->
+        <script>
+            $( document ).ready(function() {
+                var hitslineChart  = dc.compositeChart("#chart_psnr_over_frames");
+
+                var data = <?php $api = new QualityApi();
+                    echo $api->getDCJSDataWithId("testvideo");
+                    ?>;
+                /*var data =
+                 [
+                 {frame: 0, b4000: 43.34, b8000: 50.6},
+                 {frame: 1, b4000: 45.34, b8000: 51.6},
+                 {frame: 2, b4000: 42.34, b8000: 49.6},
+                 {frame: 3, b4000: 46.34, b8000: 52.6},
+                 {frame: 4, b4000: 41.34, b8000: 48.6},
+                 {frame: 5, b4000: 47.34, b8000: 53.6},
+                 {frame: 6, b4000: 40.34, b8000: 47.6},
+                 {frame: 7, b4000: 43.34, b8000: 50.6}
+                 ];*/
+                var ndx = crossfilter(data);
+                //var parseDate = d3.time.format("%m/%d/%Y").parse;
+                data.forEach(function(d) {
+                    /*d.date = parseDate(d.date);
+                     d.total= d.http_404+d.http_200+d.http_302;
+                     d.Year=d.date.getFullYear();*/
+                });
+
+                var dateDim = ndx.dimension(function(d) {return d.frame;});
+                var hits = dateDim.group().reduceSum(function(d) {return d.total;});
+                var minDate = dateDim.bottom(1)[0].frame;
+                var maxDate = dateDim.top(1)[0].frame;
+
+                var b4000=dateDim.group().reduceSum(function(d) {return d.b0;});
+                var b8000=dateDim.group().reduceSum(function(d) {return d.b1;});
+
+                hitslineChart
+                    .width(500).height(200)
+                    .dimension(dateDim)
+                    .x(d3.scale.linear()
+                        .domain([0,729]))
+                    .compose([
+                        dc.lineChart(hitslineChart).group(b4000,"4000"),
+                        dc.lineChart(hitslineChart).group(b8000,"8000")
+                    ])
+                    .brushOn(true)
+                    .yAxisLabel("PSNR");
+
+                dc.renderAll();
+            });
         </script>
     </head>
     <body>
@@ -246,6 +302,17 @@ function stringStartsWith($haystack, $needle) {
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- PSNR over time -->
+                <div class="ui styled fixed accordion" style="margin-bottom: 16px;margin-top: 16px">
+                    <div class="title">
+                        <i class="dropdown icon"></i>
+                        Qualities over all Frames
+                    </div>
+                    <div class="content" style="display: inline">
+                        <div id='chart_psnr_over_frames'></div>
+                    </div>
+                </div>
 
                 <!-- Representation quality values -->
                 <div class="ui styled fluid accordion" style="margin-bottom: 16px;margin-top: 16px">

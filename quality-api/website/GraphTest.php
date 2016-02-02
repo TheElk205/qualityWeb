@@ -5,7 +5,8 @@
  * Date: 04.01.2016
  * Time: 19:41
  */
-include_once '..\autoload.php';
+require_once '../quality/QualityApi.php';
+
 use \quality\QualityApi as QualityApi;
 $api = new QualityApi();
 //echo $api->getDCJSDataWithId("de730e241f83d8c2112ac6119a585ed1932707ab");
@@ -73,10 +74,10 @@ $api = new QualityApi();
 
     <script>
         $( document ).ready(function() {
-            var hitslineChart  = dc.compositeChart("#chart-line-hitsperday");
+            var hitslineChart  = dc.compositeChart("#psnr_values");
 
             var data = <?php $api = new QualityApi();
-                echo $api->getDCJSDataWithId("de730e241f83d8c2112ac6119a585ed1932707ab");
+                echo $api->getDCJSDataWithId("testvideo");
                 ?>;
             /*var data =
                 [
@@ -111,7 +112,10 @@ $api = new QualityApi();
                 .x(d3.scale.linear()
                     .domain([0,729]))
                 .compose([
-                    dc.lineChart(hitslineChart).group(b4000,"4000"),
+                    dc.lineChart(hitslineChart)
+                        .dimension(dateDim)
+                        .colors(["#56B2EA","#E064CD","#F8B700","#78CC00","#7B71C5"])
+                        .group(b4000,"4000"),
                     dc.lineChart(hitslineChart).group(b8000,"8000")
                 ])
                 .brushOn(true)
@@ -127,8 +131,8 @@ $api = new QualityApi();
     <body>
         <?php include 'menu.php'?>
         <div class="ui main text container">
-            <div id="chart-ring-year"></div>
-            <div id="chart-line-hitsperday"></div>
+
+            <div id="psnr_values"></div>
         </div>
     </body>
 </html>

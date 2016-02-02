@@ -11,4 +11,5 @@ include_once "quality/QualityApi.php";
 
 $api = new \quality\QualityApi();
 ;
-var_dump($api->getQualityWithId("testvideo"));
+//var_dump($api->getQualityWithId("testvideo"));
+$api->getDCJSDataWithId("testvideo");

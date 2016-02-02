@@ -8,7 +8,7 @@
 
 namespace quality;
 
-require_once '../autoload.php';
+require_once 'ApiResource.php';
 
 class QualityInfoList extends ApiResource
 {
