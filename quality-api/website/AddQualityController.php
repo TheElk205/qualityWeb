@@ -6,7 +6,7 @@
  * Time: 03:29
  */
 
-require_once '../autoload.php';
+require_once '../quality/QualityApi.php';
 
 use \quality\QualityApi as QualityApi;
 

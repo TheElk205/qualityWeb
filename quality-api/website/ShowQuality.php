@@ -5,7 +5,7 @@
  * Date: 11.12.2015
  * Time: 03:49
  */
-require_once '../autoload.php';
+require_once '../quality/QualityApi.php';
 
 use \quality\QualityApi as QualityApi;
 
@@ -125,49 +125,6 @@ function stringStartsWith($haystack, $needle) {
                 }?>
             }
         </script>
-
-        <!-- Graphs Over time -->
-        <!-- <script>
-            google.load('visualization', '1', {packages: ['corechart', 'line']});
-            google.setOnLoadCallback(drawCurveTypes);
-
-            function drawCurveTypes() {
-                <?php if (isset($_GET['id'])) {
-                $quality = $qualityApi->getQualityWithId($_GET["id"]);
-                echo "var data = new google.visualization.DataTable();";
-                echo "data.addColumn('number', 'Frame');";
-                foreach ($quality->results as $res) {
-                    echo "data.addColumn('number', '" . $res->bitrate / 1000 . " kbps');";
-                }
-                echo "data.addRows(";
-                $data = "[";
-                for ($i = 0; $i < $quality->numberOfFrames; $i++) {
-                    $data .= "[" . $i . ",";
-                    //var_dump($quality->psnrFrames->results);
-                    foreach ($quality->psnrFrames->results as $res) {
-                        $data .= $res->results[$i] . ",";
-                    }
-                    $data = substr($data, 0, -1) . "],";
-                }
-                $data = substr($data, 0, -1) . "]";
-                echo $data . ");";
-                echo "var options = {
-                            hAxis: {
-                            title: 'Time'
-                            },
-                            vAxis: {
-                                title: 'Popularity'
-                            },
-                            series: {
-                                1: {curveType: 'function'}
-                            }
-                        };
-
-                    var chart = new google.visualization.LineChart(document.getElementById('chart_psnr_time_div'));
-                    chart.draw(data, options);";
-                }?>
-            }
-        </script> -->
     </head>
     <body>
         <?php include 'menu.php'?>
@@ -182,6 +139,7 @@ function stringStartsWith($haystack, $needle) {
                         <?php foreach($qualityApi->getQualityIds()->getAllIds() as $id) {
                             echo "<div class='item' data-value='" . $id . "'>" . $id . "</div>";
                         }?>
+
                     </div>
                 </div>
                 <button class="ui primary button">
@@ -258,9 +216,15 @@ function stringStartsWith($haystack, $needle) {
                             }?>
                         </tr>
                         <tr>
-                            <td class="left aligned">Time Needed</td>
+                            <td class="left aligned">Width</td>
                             <?php foreach($qualityTest->results as $res) {
-                                echo "<td>" . QualityApi::getFormattedtiemString($res->timeNeeded) . "</td>";
+                                echo "<td>" . $res->width . "</td>";
+                            }?>
+                        </tr>
+                        <tr>
+                            <td class="left aligned">Height</td>
+                            <?php foreach($qualityTest->results as $res) {
+                                echo "<td>" . $res->height . "</td>";
                             }?>
                         </tr>
                         <tr>

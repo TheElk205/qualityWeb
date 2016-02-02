@@ -8,22 +8,31 @@
 
 namespace quality;
 
-require_once '../autoload.php';
+//require_once '../autoload.php';
+require_once 'ApiResource.php';
 
 class RepresentationInfo extends ApiResource
 {
     /**
      * @var int
      */
-    public $timeNeeded;
+    public $width;
+
+    /**
+     * @var int
+     */
+    public $height;
+
     /**
      * @var int
      */
     public $bitrate;
+
     /**
      * @var double
      */
     public $psnr;
+
     /**
      * @var double
      */

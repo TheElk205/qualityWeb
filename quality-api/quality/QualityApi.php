@@ -10,8 +10,9 @@ namespace quality;
 
 // die gehen nciht über Autoload weg
 require_once 'apiRequests.php';
-
-require_once '../autoload.php';
+require_once 'QualityInfo.php';
+require_once 'QualityPSNR.php';
+require_once 'QualityInfoList.php';
 
 class QualityApi
 {
@@ -21,55 +22,17 @@ class QualityApi
      * @param $id   The Quality ID to analyse
      * @return \QualityInfo the object corresponding to the ID
      */
-    public function getQualityWithId($id) {
-        $json = getCall($this->basePath . "/" . $id );
+    public function getQualityWithId($id)
+    {
+        $json = getCall($this->basePath . "/" . $id);
         $quality = QualityInfo::create($json);
 
         $json = getcall($this->basePath . "/" . $id . "/psnr");
-        $psnr = QualityPSNR::create($json);
-        $quality->psnrFrames = $psnr;
-        return $quality;
-    }
-
-    public function getDCJSDataWithId($id) {
-        /*
-           [
-                {frame: 0, b4000: 43.34, b8000: 50.6},
-                {frame: 1, b4000: 45.34, b8000: 51.6},
-                {frame: 2, b4000: 42.34, b8000: 49.6},
-                {frame: 3, b4000: 46.34, b8000: 52.6},
-                {frame: 4, b4000: 41.34, b8000: 48.6},
-                {frame: 5, b4000: 47.34, b8000: 53.6},
-                {frame: 6, b4000: 40.34, b8000: 47.6},
-                {frame: 7, b4000: 43.34, b8000: 50.6}
-            ]
-         */
-        //->psnrFrames->results[0]->results
-        $quality = $this->getQualityWithId($id);
-        $string = "[";
-        $max = 10;
-        for($frame = 0; $frame < count($quality->psnrFrames->results[0]->results); $frame++) {
-            $string .= "\n{frame: " . $frame . ", ";
-            for($bitrate = 0; $bitrate < count($quality->psnrFrames->results); $bitrate++) {
-                $string .= "b" . $bitrate . ": " . $quality->psnrFrames->results[$bitrate]->results[$frame];
-                if($bitrate < count($quality->psnrFrames->results)-1) {
-                    $string .= ", ";
-                }
-                else {
-                    $string .= "}";
-                }
-            }
-            $max--;
-            /*if($max == 0) {
-                break;
-            }*/
-
-            if($frame < count($quality->psnrFrames->results[0]->results)-1) {
-                $string .= ", ";
-            }
+        if ($quality->status == "FINISHED") {
+            $psnr = QualityPSNR::create($json);
+            $quality->psnrFrames = $psnr;
         }
-        $string .= "]";
-        return $string;
+        return $quality;
     }
 
     public function getQualityWithIdJson($id) {
@@ -139,8 +102,10 @@ class QualityApi
             'numberOfThreads' => $numberOfThreads,
             'numberOfFrames' => $numberOfFrames,
         );
-        $url = $this->basePath . "/dashThreadTest";
-        return postCall($url,$fields);
+        $url = $this->basePath . "/dash";
+        $json = postCall($url,$fields);
+        $id = json_decode($json)->{"id"};
+        return $id;
     }
 
     public function createQualityTest($originalUrl, $mpdUrl, $threadCountMin, $threadCountMax, $threadStepSize, $threadRepetitons) {
@@ -154,5 +119,46 @@ class QualityApi
         );
         $url = $this->basePath . "/dash/test";
         return postCall($url,$fields);
+    }
+
+    public function getDCJSDataWithId($id) {
+        /*
+           [
+                {frame: 0, b4000: 43.34, b8000: 50.6},
+                {frame: 1, b4000: 45.34, b8000: 51.6},
+                {frame: 2, b4000: 42.34, b8000: 49.6},
+                {frame: 3, b4000: 46.34, b8000: 52.6},
+                {frame: 4, b4000: 41.34, b8000: 48.6},
+                {frame: 5, b4000: 47.34, b8000: 53.6},
+                {frame: 6, b4000: 40.34, b8000: 47.6},
+                {frame: 7, b4000: 43.34, b8000: 50.6}
+            ]
+         */
+        //->psnrFrames->results[0]->results
+        $quality = $this->getQualityWithId($id);
+        $string = "[";
+        $max = 10;
+        for($frame = 0; $frame < count($quality->psnrFrames->results[0]->results); $frame++) {
+            $string .= "\n{frame: " . $frame . ", ";
+            for($bitrate = 0; $bitrate < count($quality->psnrFrames->results); $bitrate++) {
+                $string .= "b" . $bitrate . ": " . $quality->psnrFrames->results[$bitrate]->results[$frame];
+                if($bitrate < count($quality->psnrFrames->results)-1) {
+                    $string .= ", ";
+                }
+                else {
+                    $string .= "}";
+                }
+            }
+            $max--;
+            /*if($max == 0) {
+                break;
+            }*/
+
+            if($frame < count($quality->psnrFrames->results[0]->results)-1) {
+                $string .= ", ";
+            }
+        }
+        $string .= "]";
+        return $string;
     }
 }

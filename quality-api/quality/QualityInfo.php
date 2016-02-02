@@ -9,7 +9,7 @@
 
 namespace quality;
 
-require_once '../autoload.php';
+require_once 'RepresentationInfo.php';
 
 class QualityInfo extends ApiResource
 {
@@ -17,37 +17,44 @@ class QualityInfo extends ApiResource
      * @var int
      */
     public $id;
-    /**
-     * @var array of representationInfo
-     */
-    public $results;
+
     /**
      * @var enum STATUS, so here basically a String
      */
     public $status;
+
     /**
      * @var int
      */
     public $timeNeeded;
+
     /**
      * @var int
      */
     public $numberOfThreads;
+
     /**
      * @var int
      */
     public $numberOfFrames;
+
     /**
      * @var Stirng
      */
     public $originalUrl;
+
     /**
      * @var String
      */
     public $mpdUrl;
 
     /**
-     * @var PSNR values of each fraem: QualityPSNRFrame
+     * @var array of representationInfo
+     */
+    public $results;
+
+    /**
+     * @var contains all PSNR Values fro each frame
      */
     public $psnrFrames;
 
@@ -59,13 +66,18 @@ class QualityInfo extends ApiResource
 
     public function castResults()
     {
-        $this->results;
-        $i = 0;
-        if ($this->results != null) {
-            foreach ($this->results as $res) {
-                $this->results[$i] = new RepresentationInfo($res);
-                $i = $i + 1;
+        if($this->status == "FINISHED") {
+            $this->results;
+            $i = 0;
+            if ($this->results != null) {
+                foreach ($this->results as $res) {
+                    $this->results[$i] = new RepresentationInfo($res);
+                    $i = $i + 1;
+                }
             }
+        }
+        else {
+            echo "Not casting results";
         }
     }
 

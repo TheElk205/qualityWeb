@@ -5,7 +5,7 @@
  * Date: 04.01.2016
  * Time: 19:41
  */
-include_once  '..\autoload.php';
+include_once '..\autoload.php';
 use \quality\QualityApi as QualityApi;
 $api = new QualityApi();
 //echo $api->getDCJSDataWithId("de730e241f83d8c2112ac6119a585ed1932707ab");
