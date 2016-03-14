@@ -10,6 +10,10 @@ require_once '../quality/QualityApi.php';
 use \quality\QualityApi as QualityApi;
 
 $qualityApi = new QualityApi();
+$currentId = null;
+if(isset($_GET["id"])) {
+    $currentId = $_GET["id"];
+}
 
 function shortenURL($url) {
     $offset = 0;
@@ -39,11 +43,8 @@ function stringStartsWith($haystack, $needle) {
         <!-- menu -->
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/table.css">
-        <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/accordion.css">
-        <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/dropdown.css">
-        <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/transition.css">
-        <link rel="stylesheet" type="text/css" href="../../Semantic-UI-master/dist/components/button.css">
+
+        <link rel="stylesheet" type="text/css" href="../styles/main.css">
 
         <script type="text/javascript" src="../../Semantic-UI-master/dist/components/accordion.js"></script>
         <script type="text/javascript" src="../../Semantic-UI-master/dist/components/dropdown.js"></script>
@@ -56,6 +57,8 @@ function stringStartsWith($haystack, $needle) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.js"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.5/dc.js"></script>
         <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.5/dc.css">
+
+        <script src="../charts/graphOverTime.js"></script>
 
         <style type="text/css">
             body {
@@ -134,52 +137,17 @@ function stringStartsWith($haystack, $needle) {
         <!-- frames over time -->
         <script>
             $( document ).ready(function() {
-                var hitslineChart  = dc.compositeChart("#chart_psnr_over_frames");
-
-                var data = <?php $api = new QualityApi();
-                    echo $api->getDCJSDataWithId("testvideo");
-                    ?>;
-                /*var data =
-                 [
-                 {frame: 0, b4000: 43.34, b8000: 50.6},
-                 {frame: 1, b4000: 45.34, b8000: 51.6},
-                 {frame: 2, b4000: 42.34, b8000: 49.6},
-                 {frame: 3, b4000: 46.34, b8000: 52.6},
-                 {frame: 4, b4000: 41.34, b8000: 48.6},
-                 {frame: 5, b4000: 47.34, b8000: 53.6},
-                 {frame: 6, b4000: 40.34, b8000: 47.6},
-                 {frame: 7, b4000: 43.34, b8000: 50.6}
-                 ];*/
-                var ndx = crossfilter(data);
-                //var parseDate = d3.time.format("%m/%d/%Y").parse;
-                data.forEach(function(d) {
-                    /*d.date = parseDate(d.date);
-                     d.total= d.http_404+d.http_200+d.http_302;
-                     d.Year=d.date.getFullYear();*/
-                });
-
-                var dateDim = ndx.dimension(function(d) {return d.frame;});
-                var hits = dateDim.group().reduceSum(function(d) {return d.total;});
-                var minDate = dateDim.bottom(1)[0].frame;
-                var maxDate = dateDim.top(1)[0].frame;
-
-                var b4000=dateDim.group().reduceSum(function(d) {return d.b0;});
-                var b8000=dateDim.group().reduceSum(function(d) {return d.b1;});
-
-                hitslineChart
-                    .width(500).height(200)
-                    .dimension(dateDim)
-                    .x(d3.scale.linear()
-                        .domain([0,729]))
-                    .compose([
-                        dc.lineChart(hitslineChart).group(b4000,"4000"),
-                        dc.lineChart(hitslineChart).group(b8000,"8000")
-                    ])
-                    .brushOn(true)
-                    .yAxisLabel("PSNR");
-
-                dc.renderAll();
+                <?php
+                if(isset($currentId)) {
+                    $general = $qualityApi->getQualityWithIdJson($currentId);
+                    $psnr = $qualityApi->getPSNROfIDJson($currentId);
+                    //echo "createPSNRGraphOverTime('" . $general . "','" . $psnr . "','chart_psnr_over_frames',600,200);";
+                    echo "createPSNRGraphOverTime2('" . json_encode($qualityApi->getQualityWithId($currentId)) . "','chart_psnr_over_frames',600,200);";
+                }
+                ?>
             });
+
+
         </script>
     </head>
     <body>
@@ -187,7 +155,7 @@ function stringStartsWith($haystack, $needle) {
         <div class="ui main text container">
             <!-- Selector -->
             <form action="ShowQuality.php" method="get" >
-                <div class="ui selection dropdown" style="width: 60%">
+                <div class="ui selection dropdown" style="width: 88%">
                     <input type="hidden" name="id" >
                     <i class="dropdown icon"></i>
                     <div class="default text">ID</div>
@@ -230,8 +198,8 @@ function stringStartsWith($haystack, $needle) {
                         else if($qualityTest->status == "ERROR") {
                             echo "<td class='negative'>".$qualityTest->status . "</td>";
                         }
-                        else {
-                            echo "<td class='warning'>" . $qualityTest->status . "</td>";
+                        else if($qualityTest->status == "CALCULATING") {
+                            echo "<td class='warning'>" . $qualityTest->status . ": " . round($qualityTest->percentage,2) . "% </td>";
                         }
                         ?>
 
@@ -286,7 +254,7 @@ function stringStartsWith($haystack, $needle) {
                         <tr>
                             <td class="left aligned">PSNR</td>
                             <?php foreach($qualityTest->results as $res) {
-                                echo "<td>" . $res->psnr . " dB</td>";
+                                echo "<td>" . round($res->psnr,4) . " dB</td>";
                             }?>
                         </tr>
                         <tr>
@@ -303,19 +271,14 @@ function stringStartsWith($haystack, $needle) {
                     </tbody>
                 </table>
 
-                <!-- PSNR over time -->
-                <div class="ui styled fixed accordion" style="margin-bottom: 16px;margin-top: 16px">
-                    <div class="title">
-                        <i class="dropdown icon"></i>
-                        Qualities over all Frames
-                    </div>
-                    <div class="content" style="display: inline">
-                        <div id='chart_psnr_over_frames'></div>
-                    </div>
+                <div class="ui segment" style="width: auto;height: 270px;">
+                    <h4 class="ui header">PSNR Vlaues over time</h4>
+                    <div id='chart_psnr_over_frames' ></div>
+                    <a href="PSNRGraphOnly.php<?php echo "?id=" . $currentId; ?>">Graph only</a>
                 </div>
 
                 <!-- Representation quality values -->
-                <div class="ui styled fluid accordion" style="margin-bottom: 16px;margin-top: 16px">
+                <!-- <div class="ui styled fixed accordion" style="margin-bottom: 16px;margin-top: 16px; width: auto;">
                     <div class="title">
                         <i class="dropdown icon"></i>
                         Qualities of each representation
@@ -323,17 +286,6 @@ function stringStartsWith($haystack, $needle) {
                     <div class="content" style="display: inline">
                         <div id='chart_psnr_div'></div>
                         <div id='chart_ssim_div'></div>
-                    </div>
-                </div>
-
-                <!-- Representation quality values over time-->
-                <!-- <div class="ui styled fluid accordion" style="margin-bottom: 16px;margin-top: 16px">
-                    <div class="title">
-                        <i class="dropdown icon"></i>
-                        Qualities of each representation
-                    </div>
-                    <div class="content" style="display: inline">
-                        <div id='chart_psnr_time_div'></div>
                     </div>
                 </div> -->
 
@@ -343,7 +295,7 @@ function stringStartsWith($haystack, $needle) {
                         <i class="dropdown icon"></i>
                         Video
                     </div>
-                    <div class="content" style="display: inline">
+                    <div class="content" style="display: hidden">
                         <div id="player"></div>
                     </div>
                 </div>
@@ -364,6 +316,7 @@ function stringStartsWith($haystack, $needle) {
                         // Error!
                     });
                 </script>
+
             <?php } } ?>
         </div>
     </body>

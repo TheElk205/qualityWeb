@@ -15,7 +15,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" charset="UTF-8">
 
         <!-- Site Properities -->
-        <title>Add Quality</title>
+        <title>Add Quality Local</title>
 
         <script src="//code.jquery.com/jquery-1.10.2.js"></script>
         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -49,14 +49,14 @@
                 <div class="ui stacked segment">
                     <div class="ui labeled input" style="padding-bottom: 2px;width: 100%">
                         <a class="ui label" style="width: 135px">Original Video</a>
-                        <input type="text" name="originalUrl" required="true" placeholder="original.mp4" <?php if(isset($_GET['originalUrl'])) { echo "value='" . $_GET['originalUrl'] . "'";} ?> >
+                        <input type="text" name="originalUrl" required="true" placeholder="path to original.mp4" <?php if(isset($_GET['originalUrl'])) { echo "value='" . $_GET['originalUrl'] . "'";} ?> >
                     </div>
                     <br>
                     <div class="ui labeled input" style="padding-bottom: 2px;width: 100%"">
                         <a class="ui label" style="width: 135px">Mpd File</a>
-                        <input type="text" name="mpdUrl" required="true" placeholder="representations.mpd" <?php if(isset($_GET['mpdUrl'])) { echo "value='" . $_GET['mpdUrl'] . "'";} ?>>
+                        <input type="text" name="mpdUrl" required="true" placeholder="path to representations.mpd" <?php if(isset($_GET['mpdUrl'])) { echo "value='" . $_GET['mpdUrl'] . "'";} ?>>
                     </div>
-                    <input type="hidden" name="local" value="false">
+                    <input type="hidden" name="local" value="true">
                     <br>
 
                     <!-- Further Options -->

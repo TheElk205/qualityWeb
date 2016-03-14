@@ -22,6 +22,11 @@ class QualityPSNR extends ApiResource
         $this->castResults();
     }
 
+    public function createFromJson(\stdClass $class) {
+        parent::__construct($class);
+        $this->castResults();
+    }
+
     public function castResults()
     {
         $this->results;
@@ -40,5 +45,25 @@ class QualityPSNR extends ApiResource
      */
     public static function create($json) {
         return new self(json_decode($json));
+    }
+
+    public static function createEmpty() {
+        return new self(null);
+    }
+
+    public function setID($id) {
+        $this->id = $id;
+    }
+
+    public function setStatus($status) {
+        $this->status = $status;
+    }
+
+    public function initValues() {
+        $this->results = array();
+    }
+
+    public function addValue($value) {
+        array_push($this->results,$value);
     }
 }

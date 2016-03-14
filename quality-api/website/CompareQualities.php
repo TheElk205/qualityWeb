@@ -6,9 +6,8 @@
  * Time: 18:45
  */
 
-require_once '../autoload.php';
-
-use \quality\QualityApi as QualityApi;
+require_once '../quality/QualityApi.php';
+use quality\QualityApi as QualityApi;
 
 $ids = array();
 if(isset($_GET['ids'])) {
@@ -172,18 +171,10 @@ function stringStartsWith($haystack, $needle) {
                         }?>
                     </tr>
                     <tr>
-                        <td>Time</td>
-                        <?php foreach($qualites as $quality) {
-                            foreach($quality->results as $res) {
-                                echo "<td>" . QualityApi::getFormattedtiemString($res->timeNeeded) . "</td>";
-                            }
-                        }?>
-                    </tr>
-                    <tr>
                         <td>PSNR</td>
                         <?php foreach($qualites as $quality) {
                             foreach($quality->results as $res) {
-                                echo "<td>" . $res->psnr . "</td>";
+                                echo "<td>" . round($res->psnr,4) . " dB</td>";
                             }
                         }?>
                     </tr>

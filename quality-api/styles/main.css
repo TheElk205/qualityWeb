@@ -1,3 +1,27 @@
+@import '../../Semantic-UI-master/dist/components/reset.css';
+@import '../../Semantic-UI-master/dist/components/site.css';
+
+@import '../../Semantic-UI-master/dist/components/container.css';
+@import '../../Semantic-UI-master/dist/components/grid.css';
+@import '../../Semantic-UI-master/dist/components/header.css';
+@import '../../Semantic-UI-master/dist/components/image.css';
+@import '../../Semantic-UI-master/dist/components/menu.css';
+
+@import '../../Semantic-UI-master/dist/components/divider.css';
+@import '../../Semantic-UI-master/dist/components/list.css';
+@import '../../Semantic-UI-master/dist/components/segment.css';
+@import '../../Semantic-UI-master/dist/components/dropdown.css';
+@import '../../Semantic-UI-master/dist/components/icon.css';
+
+@import '../../Semantic-UI-master/dist/components/label.css';
+
+@import '../../Semantic-UI-master/dist/components/button.css';
+@import '../../Semantic-UI-master/dist/components/input.css';
+@import '../../Semantic-UI-master/dist/components/reset.css';
+@import '../../Semantic-UI-master/dist/components/table.css';
+@import '../../Semantic-UI-master/dist/components/accordion.css';
+@import '../../Semantic-UI-master/dist/components/transition.css';
+
 #website {
     width:900px;
     position:absolute;
@@ -70,4 +94,21 @@
 .myButton:active {
     position:relative;
     top:1px;
+}
+
+body {
+    background-color: #FFFFFF;
+}
+.ui.menu .item img.logo {
+    margin-right: 1.5em;
+}
+.main.container {
+    margin-top: 7em;
+}
+.wireframe {
+    margin-top: 2em;
+}
+.ui.footer.segment {
+    margin: 5em 0em 0em;
+    padding: 5em 0em;
 }

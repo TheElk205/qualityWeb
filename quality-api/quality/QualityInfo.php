@@ -24,6 +24,11 @@ class QualityInfo extends ApiResource
     public $status;
 
     /**
+     * @var double percentage of the current calculation progress
+     */
+    public $percentage;
+
+    /**
      * @var int
      */
     public $timeNeeded;
@@ -62,6 +67,7 @@ class QualityInfo extends ApiResource
     {
         parent::__construct($class);
         $this->castResults();
+        $this->psnrFrames = array();
     }
 
     public function castResults()
@@ -77,7 +83,7 @@ class QualityInfo extends ApiResource
             }
         }
         else {
-            echo "Not casting results";
+            //echo "Not casting results";
         }
     }
 
@@ -87,5 +93,9 @@ class QualityInfo extends ApiResource
      */
     public static function create($json) {
         return new self(json_decode($json));
+    }
+
+    public function addPSNRValues($psnr) {
+        array_push($this->psnrFrames,$psnr);
     }
 }

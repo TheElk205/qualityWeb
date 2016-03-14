@@ -5,11 +5,10 @@
  * Date: 15.12.2015
  * Time: 17:44
  */
-require_once '../autoload.php';
+require_once '../quality/QualityApi.php';
 
-use \quality\QualityApi as QualityApi;
 
-$qualityApi = new QualityApi();
+$qualityApi = new quality\QualityApi();
 
 function shortenURL($url) {
     $offset = 0;

@@ -10,8 +10,9 @@ require_once '../quality/QualityApi.php';
 
 use \quality\QualityApi as QualityApi;
 
-if((isset($_GET['originalUrl']) && isset($_GET['mpdUrl'])) && (strlen($_GET['originalUrl']) > 0 && strlen($_GET['mpdUrl']) > 0)) {
+if((isset($_GET['originalUrl']) && isset($_GET['mpdUrl'])) && (strlen($_GET['originalUrl']) > 0 && strlen($_GET['mpdUrl']) > 0) && isset($_GET['local'])) {
     $api = new QualityApi();
+    $local = $_GET['local'];
     if(!isset($_GET['numberOfThreads'])) {
         $_GET['numberOfThreads'] = 1;
     }
@@ -20,8 +21,12 @@ if((isset($_GET['originalUrl']) && isset($_GET['mpdUrl'])) && (strlen($_GET['ori
     }
 
     //create Quality
-    $id = $api->createQuality($_GET['originalUrl'],$_GET['mpdUrl'],$_GET['numberOfThreads'],$_GET['numberOfFrames']);
-
+    if($local == 'false') {
+        $id = $api->createQuality($_GET['originalUrl'], $_GET['mpdUrl'], $_GET['numberOfThreads'], $_GET['numberOfFrames'], false);
+    }
+    else {
+        $id = $api->createQuality($_GET['originalUrl'], $_GET['mpdUrl'], $_GET['numberOfThreads'], $_GET['numberOfFrames'], true);
+    }
     //Evaluate Result
     if($id != -1) {
         $_GET = array();

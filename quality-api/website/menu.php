@@ -36,7 +36,8 @@
             Add
             <i class="dropdown icon"></i>
             <div class="menu">
-                <a class="item" href="AddQuality.php">Add Quality</a>
+                <a class="item" href="AddQuality.php">Add Quality
+                    <a class="item" href="AddQualityLocal.php">Add Quality Local</a>
                 <a class="item" href="AddQualityTest.php">Add Quality Test</a>
                 <a class="item" href="AddQualityFromBitcodin.php">From bitcodin</a>
             </div>
